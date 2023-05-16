@@ -4,8 +4,10 @@ public class ServerTest {
 	public static void main(String[] args) {
 		Mocha mocha = new Mocha();
 
+		mocha.set("views", "src/test/java/views/");
+
 		mocha.get("/", (res)-> {
-			res.send("<h2>Hello, World!</h2>");
+			res.render("index.html");
 		});
 
 		mocha.listen(3000, ()-> {

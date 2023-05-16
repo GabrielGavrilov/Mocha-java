@@ -4,10 +4,23 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
+ * Mocha - A tiny flexible web server framework for Java
  * @author Gabriel Gavrilov
  */
 
 public class Mocha extends MochaRoutes {
+
+	/**
+	 * Sets the Mocha server setting to the given setting value.
+	 * @param setting Name of the setting.
+	 * @param settingValue Value of the setting.
+	 */
+	public void set(String setting, String settingValue) {
+		switch(setting.toLowerCase()) {
+			case "views":
+				MochaServerAttributes.VIEWS_DIRECTORY = settingValue;
+		}
+	}
 
 	/**
 	 * Starts the Mocha web server, and listens for new sockets.
