@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "first_name": "Gabriel",
+      "last_name": "Gavrilov",
+      "occupation": "Software Developer"
+    },
+    {
+      "first_name": "Michael",
+      "last_name": "Gavrilov",
+      "occupation": "Electrical Engineer"
+    }
+  ]
+}

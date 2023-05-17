@@ -12,18 +12,25 @@ public class Mocha extends MochaRoutes {
 
 	/**
 	 * Sets the Mocha server setting to the given setting value.
+	 *
 	 * @param setting Name of the setting.
 	 * @param settingValue Value of the setting.
 	 */
-	public void set(String setting, String settingValue) {
+	public
+	void set(String setting, String settingValue) {
 		switch(setting.toLowerCase()) {
 			case "views":
 				MochaServerAttributes.VIEWS_DIRECTORY = settingValue;
+				break;
+			case "public":
+				MochaServerAttributes.PUBLIC_DIRECTORY = settingValue;
+				break;
 		}
 	}
 
 	/**
 	 * Starts the Mocha web server, and listens for new sockets.
+	 *
 	 * @param port Port for the server.
 	 * @param callback Callback method to be executed once this server is running.
 	 */

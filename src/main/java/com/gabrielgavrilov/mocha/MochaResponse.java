@@ -1,5 +1,6 @@
 package com.gabrielgavrilov.mocha;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -9,32 +10,46 @@ import java.nio.file.Paths;
 public class MochaResponse {
 
 	/**
-	 * Renders the given data to the client as HTML.
-	 * @param data Data that will be rendered as HTML.
+	 * Sends the given data to the client with the content-type of text/html.
+	 *
+	 * @param data Data that will be sent.
 	 */
 	public void send(String data) {
+		send(data, "text/html");
+	}
+
+	/**
+	 * Renders the given file to the client with the content-type of text/html.
+	 *
+	 * @param file Name of the file that will be rendered.
+	 */
+	public void render(String file) {
 		try {
-			OutputStream response = MochaClient.SOCKET.getOutputStream();
-			initializeHeader(response, "200 OK", "text/html");
-			response.write(data.getBytes());
-			closeHeader(response);
+			String fileContent = Files.readString(Paths.get(MochaServerAttributes.VIEWS_DIRECTORY + file));
+			send(fileContent, "text/html");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	/**
-	 * Renders the given file to the client as HTML.
-	 * @param file Name of the file to render.
+	 * Sends the given data to the client with the content-type of application/json.
+	 *
+	 * @param data Data that will be sent.
 	 */
-	public void render(String file) {
-		try {
-			OutputStream response = MochaClient.SOCKET.getOutputStream();
-			String fileContent = Files.readString(Paths.get(MochaServerAttributes.VIEWS_DIRECTORY + file));
+	public void sendJson(String data) {
+		send(data, "application/json");
+	}
 
-			initializeHeader(response, "200 OK", "text/html");
-			response.write(fileContent.getBytes());
-			closeHeader(response);
+	/**
+	 * Renders the given file to the client with the content-type of application/json
+	 *
+	 * @param file Name of the file that will be rendered.
+	 */
+	public void renderJson(String file) {
+		try {
+			String fileContent = Files.readString(Paths.get(MochaServerAttributes.PUBLIC_DIRECTORY + file));
+			send(fileContent, "application/json");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -42,6 +57,7 @@ public class MochaResponse {
 
 	/**
 	 * Used to initialize the header.
+	 *
 	 * @param response Client output stream.
 	 * @param status HTTP/3 status.
 	 * @param contentType Document content type.
@@ -54,7 +70,24 @@ public class MochaResponse {
 	}
 
 	/**
+	 * Sends the given data to the client as the given content type.
+	 *
+	 * @param data Data that will be sent.
+	 */
+	private void send(String data, String contentType) {
+		try {
+			OutputStream response = MochaClient.SOCKET.getOutputStream();
+			initializeHeader(response, "200 OK", contentType);
+			response.write(data.getBytes());
+			closeHeader(response);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * Used to close the header.
+	 *
 	 * @param response Client output stream.
 	 * @throws IOException
 	 */

@@ -12,6 +12,7 @@ public class MochaClient {
 	/**
 	 * Constructor for the Mocha client. Used to accept and render HTTP/3 responses to the
 	 * given socket.
+	 *
 	 * @param socket Client socket.
 	 */
 	protected MochaClient(Socket socket) {
@@ -37,6 +38,7 @@ public class MochaClient {
 
 	/**
 	 * Route handler for the client. Used to link the requested route to the appropriate response.
+	 *
 	 * @param request Socket request.
 	 */
 	protected void handleRoutes(String request) {

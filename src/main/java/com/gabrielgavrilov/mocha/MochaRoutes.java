@@ -7,6 +7,7 @@ public class MochaRoutes {
 	/**
 	 * Creates a GET request. Stores the directory and callbacks, and gets called when
 	 * appropriate by the MochaClient class.
+	 *
 	 * @param directory Directory for the GET request.
 	 * @param callback Runnable callback for the GET request.
 	 */
