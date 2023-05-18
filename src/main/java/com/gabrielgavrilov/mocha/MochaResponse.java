@@ -26,6 +26,7 @@ public class MochaResponse {
 	public void render(String file) {
 		try {
 			String fileContent = Files.readString(Paths.get(MochaServerAttributes.VIEWS_DIRECTORY + file));
+			new MochaScanner(fileContent);
 			send(fileContent, "text/html");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
