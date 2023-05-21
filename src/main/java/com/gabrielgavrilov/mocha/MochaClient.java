@@ -9,6 +9,8 @@ public class MochaClient {
 
 	public static Socket SOCKET;
 
+	// TODO: Fix the refresh issue.
+
 	/**
 	 * Constructor for the Mocha client. Used to accept and render HTTP/3 responses to the
 	 * given socket.
@@ -43,10 +45,32 @@ public class MochaClient {
 	 */
 	protected void handleRoutes(String request) {
 		String requestedDirectory = request.split("\r\n")[0].split(" ")[1];
+		handleStaticRoutes(requestedDirectory);
+
 		for(int i = 0; i < MochaServerAttributes.DIRECTORIES.size(); i++) {
 			String directory = MochaServerAttributes.DIRECTORIES.get(i);
 			if(directory.equals(requestedDirectory)) {
 				MochaServerAttributes.DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
+			}
+		}
+	}
+
+	/**
+	 * Static route handler for the client. Used to link requested static routes to the appropriate response.
+	 *
+	 * @param request Socket request.
+	 */
+	// TODO: Make this prettier.
+	protected void handleStaticRoutes(String request) {
+		String requestedDirectory = MochaServerAttributes.STATIC_DIRECTORY + request.substring(1);
+		System.out.println(requestedDirectory);
+
+		for(int i = 0; i < MochaServerAttributes.STATIC_DIRECTORIES.size(); i++) {
+
+			String directory = MochaServerAttributes.STATIC_DIRECTORIES.get(i);
+
+			if(directory.equals(requestedDirectory)) {
+				MochaServerAttributes.STATIC_DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
 			}
 		}
 	}

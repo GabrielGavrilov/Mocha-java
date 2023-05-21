@@ -16,14 +16,13 @@ public class Mocha extends MochaRoutes {
 	 * @param setting Name of the setting.
 	 * @param settingValue Value of the setting.
 	 */
-	public
-	void set(String setting, String settingValue) {
+	public static void set(String setting, String settingValue) {
 		switch(setting.toLowerCase()) {
 			case "views":
 				MochaServerAttributes.VIEWS_DIRECTORY = settingValue;
 				break;
-			case "public":
-				MochaServerAttributes.PUBLIC_DIRECTORY = settingValue;
+			case "static":
+				MochaServerAttributes.STATIC_DIRECTORY = settingValue;
 				break;
 		}
 	}
@@ -34,7 +33,7 @@ public class Mocha extends MochaRoutes {
 	 * @param port Port for the server.
 	 * @param callback Callback method to be executed once this server is running.
 	 */
-	public void listen(int port, Runnable callback) {
+	public static void listen(int port, Runnable callback) {
 		try {
 			callback.run();
 			ServerSocket mochaServer = new ServerSocket(port);

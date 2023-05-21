@@ -49,7 +49,7 @@ public class MochaResponse {
 	 */
 	public void renderJson(String file) {
 		try {
-			String fileContent = Files.readString(Paths.get(MochaServerAttributes.PUBLIC_DIRECTORY + file));
+			String fileContent = Files.readString(Paths.get(MochaServerAttributes.STATIC_DIRECTORY + file));
 			send(fileContent, "application/json");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -96,6 +96,17 @@ public class MochaResponse {
 		response.write("\r\n".getBytes());
 		response.flush();
 		response.close();
+	}
+
+	// TODO: Make this dynamic
+	protected void renderStylesheet(String file) {
+		try {
+			String fileContent = Files.readString(Paths.get(MochaServerAttributes.STATIC_DIRECTORY + file));
+			new MochaScanner(fileContent);
+			send(fileContent, "text/css");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -1,20 +1,16 @@
 import com.gabrielgavrilov.mocha.Mocha;
+import com.gabrielgavrilov.mocha.MochaRoutes;
 
-public class ServerTest {
+public class ServerTest extends Mocha {
 	public static void main(String[] args) {
-		Mocha mocha = new Mocha();
+		set("views", "src/test/java/views/");
+		set("static", "src/test/java/content/");
 
-		// Sets all the Mocha server settings.
-		mocha.set("views", "src/test/java/views/");
-		mocha.set("public", "src/test/java/content/");
-
-		// Creates a get request for the index.
-		mocha.get("/", (response)-> {
+		get("/", (response)-> {
 			response.render("index.html");
 		});
 
-		// Starts the mocha server.
-		mocha.listen(3000, ()-> {
+		listen(3000, ()-> {
 			System.out.println("Server is up and running.");
 		});
 	}

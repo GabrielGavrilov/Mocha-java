@@ -6,6 +6,8 @@ package com.gabrielgavrilov.mocha;
 
 public class MochaScanner {
 
+	// TODO: Document the code.
+
 	private String source;
 	private int sourceLength;
 	private char currentChar;
@@ -53,12 +55,31 @@ public class MochaScanner {
 					temp += currentChar;
 					advance();
 				}
-
-				System.out.println(temp);
+				determineStaticFileType(temp);
 			}
 
 			advance();
 		}
+	}
+
+	private void determineStaticFileType(String file) {
+		if(file.contains(".")) {
+			String type = file.split("\\.")[1];
+
+			switch (type) {
+				case "css":
+					handleStylesheetFile(file);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	private void handleStylesheetFile(String file) {
+		MochaRoutes.renderStaticDirectory(MochaServerAttributes.STATIC_DIRECTORY + file, (response)-> {
+			response.renderStylesheet(file);
+		});
 	}
 
 }
