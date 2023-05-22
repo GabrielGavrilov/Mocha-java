@@ -1,8 +1,6 @@
 package com.gabrielgavrilov.mocha;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,6 +55,27 @@ public class MochaResponse {
 			String fileContent = Files.readString(Paths.get(directory + file));
 			new MochaScanner(fileContent);
 			send(fileContent, contentType);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected void renderImage(String file) {
+		try {
+
+			FileInputStream content = new FileInputStream(MochaServerAttributes.STATIC_DIRECTORY + file);
+			OutputStream response = MochaClient.SOCKET.getOutputStream();
+
+			initializeHeader(response, "200 OK", "image/ico");
+
+			int i = 0;
+			while ((i = content.read())!= -1) {
+				response.write(i);
+			}
+
+			closeHeader(response);
+			content.close();
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -85,6 +85,9 @@ public class MochaScanner {
 				case "css":
 					handleStylesheetFile(file);
 					break;
+				case "ico":
+					handleFavicon(file);
+					break;
 				default:
 					break;
 			}
@@ -99,6 +102,12 @@ public class MochaScanner {
 	private void handleStylesheetFile(String file) {
 		MochaRoutes.renderStaticDirectory(MochaServerAttributes.STATIC_DIRECTORY + file, (response)-> {
 			response.render(file, MochaServerAttributes.STATIC_DIRECTORY, "text/css");
+		});
+	}
+
+	private void handleFavicon(String file) {
+		MochaRoutes.renderStaticDirectory(MochaServerAttributes.STATIC_DIRECTORY + file, (response)-> {
+			response.renderImage(file);
 		});
 	}
 

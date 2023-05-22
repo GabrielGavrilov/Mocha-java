@@ -31,6 +31,7 @@ public class MochaClient {
 			}
 
 			handleRoutes(request.toString());
+			handleStaticRoutes(request.toString());
 
 			socket.close();
 		} catch (IOException e) {
@@ -45,7 +46,7 @@ public class MochaClient {
 	 */
 	protected void handleRoutes(String request) {
 		String requestedDirectory = request.split("\r\n")[0].split(" ")[1];
-		handleStaticRoutes(requestedDirectory);
+		//handleStaticRoutes(requestedDirectory);
 
 		for(int i = 0; i < MochaServerAttributes.DIRECTORIES.size(); i++) {
 			String directory = MochaServerAttributes.DIRECTORIES.get(i);
@@ -53,6 +54,8 @@ public class MochaClient {
 				MochaServerAttributes.DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
 			}
 		}
+
+		System.out.println("Done. 1");
 	}
 
 	/**
@@ -62,8 +65,8 @@ public class MochaClient {
 	 */
 	// TODO: Make this prettier.
 	protected void handleStaticRoutes(String request) {
-		String requestedDirectory = MochaServerAttributes.STATIC_DIRECTORY + request.substring(1);
-		System.out.println(requestedDirectory);
+		String r = request.split("\r\n")[0].split(" ")[1];
+		String requestedDirectory = MochaServerAttributes.STATIC_DIRECTORY + r.substring(1);
 
 		for(int i = 0; i < MochaServerAttributes.STATIC_DIRECTORIES.size(); i++) {
 
@@ -73,6 +76,9 @@ public class MochaClient {
 				MochaServerAttributes.STATIC_DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
 			}
 		}
+
+		System.out.println("done. 2");
+
 	}
 
 }
