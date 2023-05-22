@@ -6,13 +6,16 @@ package com.gabrielgavrilov.mocha;
 
 public class MochaScanner {
 
-	// TODO: Document the code.
-
 	private String source;
 	private int sourceLength;
 	private char currentChar;
 	private int currentPos;
 
+	/**
+	 * Initializes the scanner.
+	 *
+	 * @param source Source code for the scanner.
+	 */
 	MochaScanner(String source) {
 		this.source = source;
 		this.sourceLength = source.length();
@@ -21,6 +24,9 @@ public class MochaScanner {
 		scan();
 	}
 
+	/**
+	 * Advances the current position of the scanner by one.
+	 */
 	private void advance() {
 		this.currentPos++;
 
@@ -31,6 +37,7 @@ public class MochaScanner {
 			this.currentChar = this.source.charAt(this.currentPos);
 	}
 
+	// Not used yet.
 	private char peek() {
 		if(this.currentChar + 1 >= this.sourceLength)
 			return '\0';
@@ -44,6 +51,9 @@ public class MochaScanner {
 		}
 	}
 
+	/**
+	 * Scans the current source code, and executes the appropriate methods.
+	 */
 	private void scan() {
 		while(this.currentChar != '\0') {
 
@@ -62,6 +72,11 @@ public class MochaScanner {
 		}
 	}
 
+	/**
+	 * Determines the type of file if the file is static, and execute the appropriate methods.
+	 *
+	 * @param file File name.
+	 */
 	private void determineStaticFileType(String file) {
 		if(file.contains(".")) {
 			String type = file.split("\\.")[1];
@@ -76,9 +91,14 @@ public class MochaScanner {
 		}
 	}
 
+	/**
+	 * Handles the stylesheet file.
+	 *
+	 * @param file Stylesheet file name.
+	 */
 	private void handleStylesheetFile(String file) {
 		MochaRoutes.renderStaticDirectory(MochaServerAttributes.STATIC_DIRECTORY + file, (response)-> {
-			response.renderStylesheet(file);
+			response.render(file, MochaServerAttributes.STATIC_DIRECTORY, "text/css");
 		});
 	}
 

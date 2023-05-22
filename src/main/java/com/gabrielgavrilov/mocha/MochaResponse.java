@@ -24,13 +24,7 @@ public class MochaResponse {
 	 * @param file Name of the file that will be rendered.
 	 */
 	public void render(String file) {
-		try {
-			String fileContent = Files.readString(Paths.get(MochaServerAttributes.VIEWS_DIRECTORY + file));
-			new MochaScanner(fileContent);
-			send(fileContent, "text/html");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		render(file, MochaServerAttributes.VIEWS_DIRECTORY, "text/html");
 	}
 
 	/**
@@ -48,9 +42,21 @@ public class MochaResponse {
 	 * @param file Name of the file that will be rendered.
 	 */
 	public void renderJson(String file) {
+		render(file, MochaServerAttributes.STATIC_DIRECTORY, "application/json");
+	}
+
+	/**
+	 * Renders a file with the given directory and content-type.
+	 *
+	 * @param file File name.
+	 * @param directory Directory name.
+	 * @param contentType Content-type.
+	 */
+	protected void render(String file, String directory, String contentType) {
 		try {
-			String fileContent = Files.readString(Paths.get(MochaServerAttributes.STATIC_DIRECTORY + file));
-			send(fileContent, "application/json");
+			String fileContent = Files.readString(Paths.get(directory + file));
+			new MochaScanner(fileContent);
+			send(fileContent, contentType);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -96,17 +102,6 @@ public class MochaResponse {
 		response.write("\r\n".getBytes());
 		response.flush();
 		response.close();
-	}
-
-	// TODO: Make this dynamic
-	protected void renderStylesheet(String file) {
-		try {
-			String fileContent = Files.readString(Paths.get(MochaServerAttributes.STATIC_DIRECTORY + file));
-			new MochaScanner(fileContent);
-			send(fileContent, "text/css");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 }
