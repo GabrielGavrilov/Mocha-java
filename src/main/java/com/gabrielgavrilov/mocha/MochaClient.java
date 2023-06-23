@@ -1,27 +1,26 @@
 package com.gabrielgavrilov.mocha;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 public class MochaClient {
 
-	public static Socket SOCKET;
-
-	// TODO: Fix the refresh issue.
+	public static InputStream INPUT_STREAM;
+	public static OutputStream OUTPUT_STREAM;
 
 	/**
 	 * Constructor for the Mocha client. Used to accept and render HTTP/3 responses to the
 	 * given socket.
 	 *
-	 * @param socket Client socket.
+	 * @param input Socket InputStream
+	 * @param output Socket OutputStream
 	 */
-	protected MochaClient(Socket socket) {
+	protected MochaClient(InputStream input, OutputStream output) {
 		try {
-			SOCKET = socket;
+			INPUT_STREAM = input;
+			OUTPUT_STREAM = output;
 
-			InputStreamReader clientInput = new InputStreamReader(socket.getInputStream());
+			InputStreamReader clientInput = new InputStreamReader(INPUT_STREAM);
 			BufferedReader buffer = new BufferedReader(clientInput);
 			StringBuilder request = new StringBuilder();
 
@@ -33,7 +32,6 @@ public class MochaClient {
 			handleRoutes(request.toString());
 			handleStaticRoutes(request.toString());
 
-			socket.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -55,7 +53,6 @@ public class MochaClient {
 			}
 		}
 
-		System.out.println("Done. 1");
 	}
 
 	/**
@@ -76,8 +73,6 @@ public class MochaClient {
 				MochaServerAttributes.STATIC_DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
 			}
 		}
-
-		System.out.println("done. 2");
 
 	}
 

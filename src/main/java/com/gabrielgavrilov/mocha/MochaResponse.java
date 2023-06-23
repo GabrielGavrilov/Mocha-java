@@ -64,7 +64,7 @@ public class MochaResponse {
 		try {
 
 			FileInputStream content = new FileInputStream(MochaServerAttributes.STATIC_DIRECTORY + file);
-			OutputStream response = MochaClient.SOCKET.getOutputStream();
+			OutputStream response = MochaClient.OUTPUT_STREAM;
 
 			initializeHeader(response, "200 OK", "image/ico");
 
@@ -102,7 +102,7 @@ public class MochaResponse {
 	 */
 	private void send(String data, String contentType) {
 		try {
-			OutputStream response = MochaClient.SOCKET.getOutputStream();
+			OutputStream response = MochaClient.OUTPUT_STREAM;
 			initializeHeader(response, "200 OK", contentType);
 			response.write(data.getBytes());
 			closeHeader(response);
@@ -120,7 +120,7 @@ public class MochaResponse {
 	private void closeHeader(OutputStream response) throws IOException {
 		response.write("\r\n".getBytes());
 		response.flush();
-		response.close();
+//		response.close();
 	}
 
 }

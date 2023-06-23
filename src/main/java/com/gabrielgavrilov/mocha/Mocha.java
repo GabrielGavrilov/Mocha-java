@@ -1,7 +1,10 @@
 package com.gabrielgavrilov.mocha;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * Mocha - A tiny flexible web server framework for Java
@@ -38,13 +41,20 @@ public class Mocha extends MochaRoutes {
 			callback.run();
 			ServerSocket mochaServer = new ServerSocket(port);
 			while(true) {
-				new Thread(()-> {
-					try {
-						new MochaClient(mochaServer.accept());
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}).run();
+				try {
+
+					Socket client = mochaServer.accept();
+
+					InputStream clientInput = client.getInputStream();
+					OutputStream clientOutput = client.getOutputStream();
+
+					new MochaClient(clientInput, clientOutput);
+
+					client.close();
+
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
