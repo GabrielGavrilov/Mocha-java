@@ -10,6 +10,11 @@ public class ServerTest extends Mocha {
 			response.render("index.html");
 		});
 
+		post("/", (request, response)-> {
+			System.out.println(request.body.get("nameInput"));
+			response.render("index.html");
+		});
+
 		listen(3000, ()-> {
 			System.out.println("Server is up and running.");
 		});

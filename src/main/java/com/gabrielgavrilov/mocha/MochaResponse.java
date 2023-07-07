@@ -90,7 +90,7 @@ public class MochaResponse {
 	 * @throws IOException
 	 */
 	private void initializeHeader(OutputStream response, String status, String contentType) throws IOException {
-		response.write(("HTTP/3 " + status + "\r\n").getBytes());
+		response.write(("HTTP/1.0 " + status + "\r\n").getBytes());
 		response.write(("Content-Type: " + contentType + "\r\n").getBytes());
 		response.write("\r\n".getBytes());
 	}

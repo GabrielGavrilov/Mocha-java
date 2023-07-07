@@ -1,5 +1,6 @@
 package com.gabrielgavrilov.mocha;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class MochaRoutes {
@@ -12,12 +13,15 @@ public class MochaRoutes {
 	 * @param callback Runnable callback for the GET request.
 	 */
 	public static void get(String directory, Consumer<MochaResponse> callback) {
-		MochaServerAttributes.DIRECTORIES.add(directory);
-		MochaServerAttributes.DIRECTORY_CALLBACKS.add(callback);
+		MochaServerAttributes.GET_DIRECTORIES.add(directory);
+		MochaServerAttributes.GET_DIRECTORY_CALLBACKS.add(callback);
 	}
 
 	// TODO: Add a POST request
-
+	public static void post(String directory, BiConsumer<MochaRequest, MochaResponse> callback) {
+		MochaServerAttributes.POST_DIRECTORIES.add(directory);
+		MochaServerAttributes.POST_DIRECTORY_CALLBACKS.add(callback);
+	}
 
 	protected static void renderStaticDirectory(String directory, Consumer<MochaResponse> callback) {
 		MochaServerAttributes.STATIC_DIRECTORIES.add(directory);

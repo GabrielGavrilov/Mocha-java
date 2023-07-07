@@ -2,11 +2,14 @@ package com.gabrielgavrilov.mocha;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MochaClient {
 
 	public static InputStream INPUT_STREAM;
 	public static OutputStream OUTPUT_STREAM;
+	public static HashMap<String, String> PAYLOAD = new HashMap<>();
 
 	/**
 	 * Constructor for the Mocha client. Used to accept and render HTTP/3 responses to the
@@ -22,15 +25,39 @@ public class MochaClient {
 
 			InputStreamReader clientInput = new InputStreamReader(INPUT_STREAM);
 			BufferedReader buffer = new BufferedReader(clientInput);
-			StringBuilder request = new StringBuilder();
+			StringBuilder header = new StringBuilder();
+			StringBuilder payloads = new StringBuilder();
 
 			String line;
-			while(!(line = buffer.readLine()).isBlank()) {
-				request.append(line + "\r\n");
+			while((line = buffer.readLine()).length() != 0) {
+				header.append(line + "\r\n");
 			}
 
-			handleRoutes(request.toString());
-			handleStaticRoutes(request.toString());
+			if(getMethod(header.toString()).equals("POST")) {
+				// Get the payload data
+				while(buffer.ready()) {
+					payloads.append((char) buffer.read());
+				}
+
+				String rawPayloads[] = payloads.toString().split("&");
+
+				for(int i = 0; i < rawPayloads.length; i++) {
+					String payload[] = rawPayloads[i].split("=");
+
+					payload[1] = payload[1].replace('+', ' ');
+
+					PAYLOAD.put(payload[0], payload[1]);
+				}
+
+
+				handlePostRoutes(header.toString());
+				handleStaticRoutes(header.toString());
+			}
+
+			else {
+				handleGetRoutes(header.toString());
+				handleStaticRoutes(header.toString());
+			}
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -42,14 +69,26 @@ public class MochaClient {
 	 *
 	 * @param request Socket request.
 	 */
-	protected void handleRoutes(String request) {
-		String requestedDirectory = request.split("\r\n")[0].split(" ")[1];
+	protected void handleGetRoutes(String header) {
+		String requestedDirectory = header.split("\r\n")[0].split(" ")[1];
 		//handleStaticRoutes(requestedDirectory);
 
-		for(int i = 0; i < MochaServerAttributes.DIRECTORIES.size(); i++) {
-			String directory = MochaServerAttributes.DIRECTORIES.get(i);
+		for(int i = 0; i < MochaServerAttributes.GET_DIRECTORIES.size(); i++) {
+			String directory = MochaServerAttributes.GET_DIRECTORIES.get(i);
 			if(directory.equals(requestedDirectory)) {
-				MochaServerAttributes.DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
+				MochaServerAttributes.GET_DIRECTORY_CALLBACKS.get(i).accept(new MochaResponse());
+			}
+		}
+
+	}
+
+	protected void handlePostRoutes(String header) {
+		String requestedDirectory = header.split("\r\n")[0].split(" ")[1];
+
+		for(int i = 0; i < MochaServerAttributes.POST_DIRECTORIES.size(); i++) {
+			String directory = MochaServerAttributes.POST_DIRECTORIES.get(i);
+			if(directory.equals(requestedDirectory)) {
+				MochaServerAttributes.POST_DIRECTORY_CALLBACKS.get(i).accept(new MochaRequest(), new MochaResponse());
 			}
 		}
 
@@ -61,8 +100,8 @@ public class MochaClient {
 	 * @param request Socket request.
 	 */
 	// TODO: Make this prettier.
-	protected void handleStaticRoutes(String request) {
-		String r = request.split("\r\n")[0].split(" ")[1];
+	protected void handleStaticRoutes(String header) {
+		String r = header.split("\r\n")[0].split(" ")[1];
 		String requestedDirectory = MochaServerAttributes.STATIC_DIRECTORY + r.substring(1);
 
 		for(int i = 0; i < MochaServerAttributes.STATIC_DIRECTORIES.size(); i++) {
@@ -74,6 +113,10 @@ public class MochaClient {
 			}
 		}
 
+	}
+
+	protected String getMethod(String header) {
+		return header.split("\r\n")[0].split(" ")[0];
 	}
 
 }
